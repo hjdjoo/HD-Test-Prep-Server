@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express"
 import * as nodemailer from "nodemailer";
 import * as fs from "fs";
 import path from "path";
-import createSupabase from "@/utils/supabase/server";
+import createSupabase from "@/utils/supabase/server.js";
 import { decode } from "base64-arraybuffer";
-import { ServerError } from "../_types/server-types";
+import { ServerError } from "../_types/server-types.js";
 
 // const MG_DOMAIN = process.env.MG_DOMAIN!;
 // const MG_SENDING_API_KEY = process.env.MG_SENDING_API_KEY!;
@@ -52,7 +52,7 @@ mailController.extractPdf = async (req: Request, res: Response, next: NextFuncti
       const base64Pdf = pdfBuffer.toString("base64");
 
       // save pdf to disk
-      fs.writeFileSync(path.resolve("./", "server", "pdfs", `session-summary-${id}.pdf`), pdfBuffer);
+      fs.writeFileSync(path.resolve("./", "src", "pdfs", `session-summary-${id}.pdf`), pdfBuffer);
 
       // temporarily save in mem to send to db
       const clientData = {
@@ -213,7 +213,7 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
 
     const fileName = `session-summary-${sessionId}.pdf`
 
-    const pathName = path.resolve("./", "server", "pdfs", `session-summary-${sessionId}.pdf`)
+    const pathName = path.resolve("./", "src", "pdfs", `session-summary-${sessionId}.pdf`)
 
     const mailOptions = {
       from: "no-reply@hdprep.me",

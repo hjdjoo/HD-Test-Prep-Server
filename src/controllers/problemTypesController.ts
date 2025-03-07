@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { camelCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
+import createSupabase from "@/utils/supabase/server.js"
 import { CamelCasedProperties } from "type-fest"
 
 interface ProblemTypesController {

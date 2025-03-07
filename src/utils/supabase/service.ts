@@ -2,7 +2,7 @@
 // import createSupabase from "./client";
 import { createClient } from "@supabase/supabase-js";
 // import { Response, Request } from "express";
-import { Database } from "@/database.types";
+import { Database } from "@/database.types.js";
 
 
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!

@@ -1,6 +1,6 @@
 import { CamelCasedProperties } from "type-fest";
-import { Json } from "@/database.types";
-import { DbStudentData, DbFeedbackFormData, DbInstructorData, DbStudentResponse } from "./server-types";
+import { Json } from "@/database.types.js";
+import { DbStudentData, DbFeedbackFormData, DbInstructorData, DbStudentResponse } from "./server-types.js";
 
 export interface FileData {
   fileType: string,

@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 // import dbController from "../controllers/dbController";
-import feedbackController from "../controllers/feedbackController";
-import tagsController from "../controllers/tagsController";
-import questionController from "../controllers/questionController";
+import feedbackController from "../controllers/feedbackController.js";
+import tagsController from "../controllers/tagsController.js";
+import questionController from "../controllers/questionController.js";
 // import userController from "../controllers/userController";
 const feedbackRouter = Router();
 

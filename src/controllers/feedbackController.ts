@@ -1,16 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { snakeCase, camelCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
+import createSupabase from "@/utils/supabase/server.js"
 
+import { ServerError } from "../_types/server-types.js";
 import { SnakeCasedProperties, CamelCasedProperties } from "type-fest"
 import { decode } from "base64-arraybuffer";
 
 // types from client
-// import type { FeedbackForm, ImageData } from "@/src/features/practice/components/Practice.feedback";
+// import type { FeedbackForm, ImageData } from "@/features/practice/components/Practice.feedback";
 
-import { FeedbackForm, ImageData } from "../_types/client-types";
-import { Tables } from "@/database.types";
+import { FeedbackForm, ImageData } from "../_types/client-types.js";
+import { Tables } from "@/database.types.js";
 
 export type DbFeedbackFormData = Tables<"question_feedback">
 
@@ -46,7 +47,17 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
 
   } catch (e) {
     console.error(e);
-    return res.status(500).json(`Something went wrong while getting feedback data.`)
+
+    const error: ServerError = {
+      log: "FeedbackController: Error while getting feedback for this id",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+
   }
 }
 
@@ -90,7 +101,17 @@ feedbackController.addFeedbackImage = async (req: Request, res: Response, next: 
 
   } catch (e) {
     console.error(e);
-    return res.status(500).json("Something went wrong while adding image file to storage")
+    // return res.status(500).json("Something went wrong while adding image file to storage")
+
+    const error: ServerError = {
+      log: "FeedbackController: Something went wrong while adding image file to storage",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 
 }
@@ -145,7 +166,16 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
     // const supabase = createSupabase({ req, res });
   } catch (e) {
     console.error(e);
-    return res.status(500).json("Something went wrong while adding feedback to DB.")
+
+    const error: ServerError = {
+      log: "FeedbackController: Something went wrong while adding feedback to DB.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 
 }

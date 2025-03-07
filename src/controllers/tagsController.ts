@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import createSupabase from "@/utils/supabase/server"
-import { FeedbackForm } from "../_types/client-types";
+import createSupabase from "@/utils/supabase/server.js"
+import { FeedbackForm } from "../_types/client-types.js";
 
-import { Tables } from "@/database.types";
+import { Tables } from "@/database.types.js";
+
+import { ServerError } from "../_types/server-types.js";
 
 interface TagsController {
   [middleware: string]: (req: Request, res: Response, next: NextFunction) => void
@@ -38,7 +40,16 @@ tagsController.getTags = async (req: Request, res: Response, next: NextFunction)
 
   } catch (e) {
     console.error(e);
-    res.status(500).json(`Error while getting tags from DB: ${e}`)
+    const error: ServerError = {
+      log: "TagsController: Error while getting tags from DB.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+
   }
 
 }
@@ -84,7 +95,16 @@ tagsController.getTagsById = async (req: Request, res: Response, next: NextFunct
 
   } catch (e) {
     console.error(e);
-    res.status(500).json(`Error while getting tags by ID from DB: ${e}`)
+    const error: ServerError = {
+      log: "TagsController: Error while getting tags by ID from DB.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+
   }
 
 }
@@ -135,14 +155,21 @@ tagsController.addNewTags = async (req: Request, res: Response, next: NextFuncti
 
     return next();
   } catch (e) {
-    console.error(e);
-    return res.status(500).json(`${e}`);
+    const error: ServerError = {
+      log: "TagsController: Error while adding new tags to DB.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 
 }
 
 
-tagsController.addTag = async (req: Request, res: Response, _next: NextFunction) => {
+tagsController.addTag = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
@@ -159,7 +186,11 @@ tagsController.addTag = async (req: Request, res: Response, _next: NextFunction)
       .single();
 
     if (!data) {
-      throw new Error(`${error.message}`)
+      if (error) {
+        throw new Error(`${error.message}`)
+      } else {
+        throw new Error(`No data returned`)
+      }
     }
 
     res.status(200).json(data);
@@ -168,7 +199,16 @@ tagsController.addTag = async (req: Request, res: Response, _next: NextFunction)
   } catch (e) {
 
     console.error(e);
-    res.status(500).json(`Error while adding tag to DB: ${e}`);
+    const error: ServerError = {
+      log: "StudentResponsesController: Error while adding tag to DB.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+
   };
 
 }

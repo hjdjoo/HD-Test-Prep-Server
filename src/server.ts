@@ -3,12 +3,12 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser"
 
-import userRouter from "./routes/user";
-import dbRouter from "./routes/db";
-import mailRouter from "./routes/mail";
-import userController from "./controllers/userController";
+import userRouter from "./routes/user.js";
+import dbRouter from "./routes/db.js";
+import mailRouter from "./routes/mail.js";
+import userController from "./controllers/userController.js";
 
-import { ServerError } from "./_types/server-types";
+import { ServerError } from "./_types/server-types.js";
 
 
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!

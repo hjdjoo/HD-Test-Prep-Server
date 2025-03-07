@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 // import dbController from "../controllers/dbController";
-import problemTypesController from "../controllers/problemTypesController";
+import problemTypesController from "../controllers/problemTypesController.js";
 // import userController from "../controllers/userController";
 const problemTypesRouter = Router();
 

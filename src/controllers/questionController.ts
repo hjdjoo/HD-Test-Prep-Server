@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { camelCase, snakeCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
-import createServiceClient from "@/utils/supabase/service";
+import createSupabase from "@/utils/supabase/server.js"
+import createServiceClient from "@/utils/supabase/service.js";
 import { CamelCasedProperties, SnakeCasedProperties } from "type-fest"
 
+import { ServerError } from "../_types/server-types.js";
 // types from client
-import type { FeedbackForm } from "../_types/client-types"
+import type { FeedbackForm } from "../_types/client-types.js"
 // import StudentResponse
-import { Question } from "../_types/client-types";
+import { Question } from "../_types/client-types.js";
 
 
 interface QuestionController {
@@ -44,7 +45,17 @@ questionController.getQuestions = async (req: Request, res: Response, next: Next
     return next();
 
   } catch (e) {
-    res.status(500).json(`${e}`);
+
+    const error: ServerError = {
+      log: "questionController: Error while getting questions",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+    // res.status(500).json(`${e}`);
   }
 
 }
@@ -97,7 +108,15 @@ questionController.updateQuestion = async (req: Request, res: Response, next: Ne
 
   } catch (e) {
     console.error(e);
-    return res.status(500).json(`Something went wrong while updating question. ${e}`)
+    const error: ServerError = {
+      log: "questionController: Something went wrong while updating question.s",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 
 }

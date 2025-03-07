@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Response, Request } from "express";
 // import { parse } from "cookie";
-import { Database } from "@/database.types";
+import { Database } from "@/database.types.js";
 
 const SUPABASE_PUBLIC_KEY = process.env.VITE_SUPABASE_PUBLIC_KEY!;
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL!;

@@ -13,9 +13,11 @@
   "license": "MIT",
   "author": "Darryl Joo",
   "type": "module",
-  "main": "src/server.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "npx tsx --tsconfig tsconfig.json --watch src/server.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "gen-types": "supabase gen types --lang=typescript --project-id \"ulkvsrwaqlwowvjsnjwu\" --schema public > database.types.ts"
   },
@@ -44,6 +46,7 @@
     "concurrently": "^9.0.1",
     "eslint": "^9.11.1",
     "globals": "^15.9.0",
+    "tsc-alias": "^1.8.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.7.0"
   }

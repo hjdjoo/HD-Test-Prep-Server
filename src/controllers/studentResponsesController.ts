@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { snakeCase, camelCase } from "change-case/keys"
-import { Tables } from "@/database.types";
+import { Tables } from "@/database.types.js";
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
+import createSupabase from "@/utils/supabase/server.js"
 import { SnakeCasedProperties, CamelCasedProperties } from "type-fest";
-import { StudentResponse } from "../_types/client-types";
+import { StudentResponse } from "../_types/client-types.js";
+import { ServerError } from "../_types/server-types.js";
 
 console.log("entering Student Response Controller")
 
@@ -23,7 +24,7 @@ studentResponsesController.getResponsesById = async (req: Request, res: Response
 
     const ids = query.ids as string
 
-    console.log("studentResponsesController.getResponses/query: ", ids);
+    // console.log("studentResponsesController.getResponses/query: ", ids);
     if (!ids) {
       return res.status(500).json("No query parameters were detected")
     }
@@ -34,7 +35,7 @@ studentResponsesController.getResponsesById = async (req: Request, res: Response
 
     const dbQuery = ids.split(",").map(str => Number(str));
 
-    console.log(dbQuery);
+    // console.log(dbQuery);
 
     const supabase = createSupabase({ req, res });
 
@@ -59,7 +60,16 @@ studentResponsesController.getResponsesById = async (req: Request, res: Response
 
   } catch (e) {
     console.error(e);
-    return res.status(500).json(`Something went wrong while getting responses: ${e}`)
+
+    const error: ServerError = {
+      log: "StudentResponsesController: Error while getting student responses",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 }
 
@@ -96,7 +106,15 @@ studentResponsesController.getResponsesBySession = async (req: Request, res: Res
 
   } catch (e) {
     console.error("studentResponseController/getResponsesbySession/e: ", e);
-    return res.status(500).json(`Error while getting responses by session id: ${e}`)
+    const error: ServerError = {
+      log: "StudentResponsesController: Error while getting responses by session id:",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
   }
 }
 
@@ -130,8 +148,15 @@ studentResponsesController.addStudentResponse = async (req: Request, res: Respon
 
   } catch (e) {
     console.error(e);
-    return res.status(500).json(`Something went wrong while adding student response to DB: ${e}`)
+    const error: ServerError = {
+      log: "StudentResponsesController: Something went wrong while adding student response to DB:",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
 
+    return next(error);
   }
 
 }
