@@ -16,8 +16,8 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY package.json package-lock.json ./
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 EXPOSE 3000
 
-ENTRYPOINT ["node", "dist/server.js"]
+ENTRYPOINT ["npm", "start"]
