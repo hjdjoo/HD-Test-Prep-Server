@@ -1,4 +1,4 @@
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_URL = process.env.SUPABASE_URL;
 /**
  *
  * @param category "math" or "english" eventually; "math" only for now

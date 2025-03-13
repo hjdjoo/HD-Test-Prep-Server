@@ -1,5 +1,5 @@
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL
+const SUPABASE_URL = process.env.SUPABASE_URL
 
 /**
  * 

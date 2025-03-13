@@ -6,8 +6,6 @@ import createSupabase from "@/utils/supabase/server.js";
 import { decode } from "base64-arraybuffer";
 import { ServerError } from "../_types/server-types.js";
 
-// const MG_DOMAIN = process.env.MG_DOMAIN!;
-// const MG_SENDING_API_KEY = process.env.MG_SENDING_API_KEY!;
 const MG_SMTP_USER = process.env.MG_SMTP_USER!;
 const MG_SMTP_PASSWORD = process.env.MG_SMTP_PASSWORD!;
 

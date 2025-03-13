@@ -3,6 +3,8 @@ version: '3.8'
 services:
   server:
     image: darryljoo/hd-prep-server-prod
+    env_file:
+      - .env
     container_name: hd-prep-server-prod
     ports:
       - "3000:3000"

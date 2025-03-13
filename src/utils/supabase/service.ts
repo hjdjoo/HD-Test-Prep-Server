@@ -7,7 +7,7 @@ import { Database } from "@/database.types.js";
 
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL!
+const SUPABASE_URL = process.env.SUPABASE_URL!
 
 // interface Context {
 //   req: Request,
