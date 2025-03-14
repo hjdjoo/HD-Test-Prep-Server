@@ -33,6 +33,10 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SUPABASE_JWT_SECRET))
 
+app.use("/health", (_req: Request, res: Response) => {
+  res.status(200).json("ok");
+});
+
 app.use("/auth", userRouter);
 app.use("/db", userController.checkTokens, dbRouter);
 app.use("/mail", userController.checkTokens, mailRouter);
