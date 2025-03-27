@@ -3,6 +3,8 @@ import { snakeCase, camelCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
 import createSupabase from "@/utils/supabase/server.js"
 
+import { PostgrestError } from "@supabase/supabase-js";
+
 import { ServerError } from "../_types/server-types.js";
 import { SnakeCasedProperties, CamelCasedProperties } from "type-fest"
 import { decode } from "base64-arraybuffer";
@@ -35,8 +37,8 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
       .single();
 
     if (error) {
-      console.error(`Nothing found for this feedback id. ${error.details}`)
-      throw new Error(error.message)
+      console.error(`Nothing found for this feedback id. ${error}`)
+      throw error
     };
 
     const clientData = camelCase(data) as CamelCasedProperties<typeof data>;
@@ -46,7 +48,8 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
     return next();
 
   } catch (e) {
-    console.error(e);
+    const sbError = e as PostgrestError;
+    console.log(sbError);
 
     const error: ServerError = {
       log: "FeedbackController: Error while getting feedback for this id",
@@ -94,14 +97,16 @@ feedbackController.addFeedbackImage = async (req: Request, res: Response, next: 
 
     if (error) {
       console.error(error);
-      throw new Error(error.message);
+      throw error;
     };
 
     return next();
 
   } catch (e) {
-    console.error(e);
     // return res.status(500).json("Something went wrong while adding image file to storage")
+    const sbError = e as PostgrestError;
+
+    console.log(sbError);
 
     const error: ServerError = {
       log: "FeedbackController: Something went wrong while adding image file to storage",
@@ -148,6 +153,8 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
 
     const dbQuery = snakeCase(feedbackForm) as SnakeCasedProperties<typeof feedbackForm>;
 
+    console.log(dbQuery);
+
 
     const { data, error } = await supabase
       .from("question_feedback")
@@ -157,7 +164,7 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
 
     if (error) {
       console.error("feedbackController/insert/error: ", error);
-      throw new Error(error.message);
+      throw error;
     }
 
     res.locals.clientData = { id: data.id }
@@ -165,7 +172,9 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
     return next();
     // const supabase = createSupabase({ req, res });
   } catch (e) {
-    console.error(e);
+    const sbError = e as PostgrestError;
+
+    console.log(sbError);
 
     const error: ServerError = {
       log: "FeedbackController: Something went wrong while adding feedback to DB.",
