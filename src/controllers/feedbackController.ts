@@ -55,7 +55,7 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
       log: "FeedbackController: Error while getting feedback for this id",
       status: 500,
       message: {
-        error: `${e}`
+        error: `${sbError.message}`
       }
     }
 
@@ -112,7 +112,7 @@ feedbackController.addFeedbackImage = async (req: Request, res: Response, next: 
       log: "FeedbackController: Something went wrong while adding image file to storage",
       status: 500,
       message: {
-        error: `${e}`
+        error: `${sbError.message}`
       }
     }
 
@@ -180,7 +180,7 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
       log: "FeedbackController: Something went wrong while adding feedback to DB.",
       status: 500,
       message: {
-        error: `${e}`
+        error: `${sbError.message}`
       }
     }
 
