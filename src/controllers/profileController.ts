@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { Tables } from "@/database.types";
+import { Tables } from "@/database.types.js";
 import { camelCase, snakeCase } from "change-case/keys";
 import { CamelCasedProperties, SnakeCasedProperties } from "type-fest";
 
-import { NewProfileForm } from "../_types/client-types";
+import { NewProfileForm } from "../_types/client-types.js";
 
-import createSupabase from "@/utils/supabase/server";
+import createSupabase from "@/utils/supabase/server.js";
 
-import { ServerError } from "../_types/server-types";
+import { ServerError } from "../_types/server-types.js";
 
 const profileController:
   { [middleware: string]: (req: Request, res: Response, next: NextFunction) => void } = {};

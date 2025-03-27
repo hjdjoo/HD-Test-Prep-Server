@@ -1,4 +1,4 @@
-import { Tables } from "@/database.types";
+import { Tables } from "@/database.types.js";
 
 export interface ServerError {
   log: string

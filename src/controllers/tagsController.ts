@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import createSupabase from "@/utils/supabase/server"
-import { FeedbackForm } from "../_types/client-types";
+import createSupabase from "@/utils/supabase/server.js"
+import { FeedbackForm } from "../_types/client-types.js";
 
-import { Tables } from "@/database.types";
+import { Tables } from "@/database.types.js";
+
+import { ServerError } from "../_types/server-types.js";
+import { PostgrestError } from "@supabase/supabase-js";
 
 interface TagsController {
   [middleware: string]: (req: Request, res: Response, next: NextFunction) => void
@@ -21,13 +24,9 @@ tagsController.getTags = async (req: Request, res: Response, next: NextFunction)
       .from("tags")
       .select("*")
 
-    if (!data) {
-      throw new Error(`${error.message}`)
-    }
-
-    if (!data.length) {
-      throw new Error("No rows returned from DB. Have you checked RLS policies?")
-    }
+    if (error) {
+      throw error;
+    };
 
     // console.log("data: ", data)
     // console.log("error: ", error)
@@ -37,8 +36,19 @@ tagsController.getTags = async (req: Request, res: Response, next: NextFunction)
     return next();
 
   } catch (e) {
-    console.error(e);
-    res.status(500).json(`Error while getting tags from DB: ${e}`)
+    const sbError = e as PostgrestError;
+
+    console.log(sbError);
+    const error: ServerError = {
+      log: "TagsController: Error while getting tags from DB.",
+      status: 500,
+      message: {
+        error: `${sbError.message}`
+      }
+    }
+
+    return next(error);
+
   }
 
 }
@@ -69,7 +79,7 @@ tagsController.getTagsById = async (req: Request, res: Response, next: NextFunct
 
     if (error) {
       console.error("tagsController/getTagsById/error details: ", error.details);
-      throw new Error(error.message)
+      throw error;
     }
 
     const clientData: { [id: string]: string } = {};
@@ -83,8 +93,19 @@ tagsController.getTagsById = async (req: Request, res: Response, next: NextFunct
     return next();
 
   } catch (e) {
-    console.error(e);
-    res.status(500).json(`Error while getting tags by ID from DB: ${e}`)
+    const sbError = e as PostgrestError;
+
+    console.log(sbError);
+    const error: ServerError = {
+      log: "TagsController: Error while getting tags by ID from DB.",
+      status: 500,
+      message: {
+        error: `${sbError.message}`
+      }
+    }
+
+    return next(error);
+
   }
 
 }
@@ -115,7 +136,7 @@ tagsController.addNewTags = async (req: Request, res: Response, next: NextFuncti
       console.log("tagsController/error: ");
       console.error(error.message);
       console.error(error.details);
-      return res.status(500).json(`Error while adding new tags to DB. ${error.message}`)
+      throw error;
     }
 
     if (!data.length) {
@@ -135,14 +156,27 @@ tagsController.addNewTags = async (req: Request, res: Response, next: NextFuncti
 
     return next();
   } catch (e) {
+
     console.error(e);
-    return res.status(500).json(`${e}`);
+    const sbError = e as PostgrestError;
+
+    console.log(sbError);
+
+    const error: ServerError = {
+      log: "TagsController: Error while adding new tags to DB.",
+      status: 500,
+      message: {
+        error: `${sbError.message}`
+      }
+    }
+
+    return next(error);
   }
 
 }
 
 
-tagsController.addTag = async (req: Request, res: Response, _next: NextFunction) => {
+tagsController.addTag = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
@@ -158,17 +192,29 @@ tagsController.addTag = async (req: Request, res: Response, _next: NextFunction)
       .select("id")
       .single();
 
-    if (!data) {
-      throw new Error(`${error.message}`)
+
+    if (error) {
+      throw error;
     }
+
 
     res.status(200).json(data);
 
 
   } catch (e) {
+    const sbError = e as PostgrestError;
 
-    console.error(e);
-    res.status(500).json(`Error while adding tag to DB: ${e}`);
+    console.log(sbError);
+    const error: ServerError = {
+      log: "StudentResponsesController: Error while adding tag to DB.",
+      status: 500,
+      message: {
+        error: `${sbError.message}`
+      }
+    }
+
+    return next(error);
+
   };
 
 }

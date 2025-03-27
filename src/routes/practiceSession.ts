@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import practiceSessionController from "../controllers/practiceSessionController";
+import practiceSessionController from "../controllers/practiceSessionController.js";
 // import dbController from "../controllers/dbController";
 // import student
 

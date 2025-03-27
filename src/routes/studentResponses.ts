@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 // import dbController from "../controllers/dbController";
-import studentResponsesController from "../controllers/studentResponsesController";
+import studentResponsesController from "../controllers/studentResponsesController.js";
 // import userController from "../controllers/userController";
 const studentResponsesRouter = Router();
 

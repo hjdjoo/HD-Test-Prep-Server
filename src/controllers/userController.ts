@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import createClient from "@/utils/supabase/server";
-import createServiceClient from "@/utils/supabase/service";
+import createClient from "@/utils/supabase/server.js";
+import createServiceClient from "@/utils/supabase/service.js";
 
 // import HMACSH
 
 import { type User } from "@supabase/supabase-js";
-import { ServerError } from "../_types/server-types";
+import { ServerError } from "../_types/server-types.js";
 // import createSupabase from "@/utils/supabase/server";
 
 console.log("entered userController");
@@ -137,7 +137,11 @@ userController.initProfile = async (_req: Request, res: Response, next: NextFunc
       .single();
 
     if (!data) {
-      throw new Error(`Couldn't initialize profile. ${error.message}`)
+      if (error) {
+        throw new Error(`Couldn't initialize profile. ${error.message}`)
+      } else {
+        throw new Error("No response from DB")
+      }
     }
 
     return res.status(200).json(data);

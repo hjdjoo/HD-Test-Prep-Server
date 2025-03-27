@@ -3,12 +3,12 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser"
 
-import userRouter from "./routes/user";
-import dbRouter from "./routes/db";
-import mailRouter from "./routes/mail";
-import userController from "./controllers/userController";
+import userRouter from "./routes/user.js";
+import dbRouter from "./routes/db.js";
+import mailRouter from "./routes/mail.js";
+import userController from "./controllers/userController.js";
 
-import { ServerError } from "./_types/server-types";
+import { ServerError } from "./_types/server-types.js";
 
 
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!
@@ -32,6 +32,10 @@ app.use(cors(corsOptions))
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SUPABASE_JWT_SECRET))
+
+app.use("/health", (_req: Request, res: Response) => {
+  res.status(200).json("ok");
+});
 
 app.use("/auth", userRouter);
 app.use("/db", userController.checkTokens, dbRouter);

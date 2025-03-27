@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 // import dbController from "../controllers/dbController";
-import questionController from "../controllers/questionController";
+import questionController from "../controllers/questionController.js";
 // import userController from "../controllers/userController";
 const questionRouter = Router();
 

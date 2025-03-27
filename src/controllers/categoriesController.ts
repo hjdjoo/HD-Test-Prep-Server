@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { camelCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
+import createSupabase from "@/utils/supabase/server.js"
 import { CamelCasedProperties } from "type-fest"
+import { ServerError } from "../_types/server-types.js";
 
 
 
@@ -40,7 +41,17 @@ categoriesController.getCategories = async (req: Request, res: Response, next: N
     return next();
 
   } catch (e) {
-    res.status(500).json(`${e}`);
+
+    const error: ServerError = {
+      log: "CategoriesController: Error while getting categories.",
+      status: 500,
+      message: {
+        error: `${e}`
+      }
+    }
+
+    return next(error);
+    // res.status(500).json(`${e}`);
   }
 }
 

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 // import { camelCase, snakeCase } from "change-case/keys"
 // import createSupabase from "@/utils/supabase/client.ts"
-import createSupabase from "@/utils/supabase/server"
-import { ServerError } from "../_types/server-types";
+import createSupabase from "@/utils/supabase/server.js"
+import { ServerError } from "../_types/server-types.js";
 
 
 interface PracticeSessionController {

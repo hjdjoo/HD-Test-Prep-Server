@@ -1,12 +1,12 @@
 import { Router } from "express";
-import questionRouter from "./questions";
-import categoriesRouter from "./categories";
-import problemTypesRouter from "./problemTypes";
-import tagsRouter from "./tags";
-import feedbackRouter from "./feedback";
-import studentResponsesRouter from "./studentResponses";
-import practiceSessionRouter from "./practiceSession";
-import profilesRouter from "./profiles"
+import questionRouter from "./questions.js";
+import categoriesRouter from "./categories.js";
+import problemTypesRouter from "./problemTypes.js";
+import tagsRouter from "./tags.js";
+import feedbackRouter from "./feedback.js";
+import studentResponsesRouter from "./studentResponses.js";
+import practiceSessionRouter from "./practiceSession.js";
+import profilesRouter from "./profiles.js"
 // import categoriesR
 // import userController from "../controllers/userController";
 const dbRouter = Router();
