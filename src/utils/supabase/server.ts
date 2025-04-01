@@ -18,6 +18,7 @@ const createSupabase = (context: Context) => {
 
   const client = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
     auth: {
+      autoRefreshToken: true,
       persistSession: true,
     },
   });
