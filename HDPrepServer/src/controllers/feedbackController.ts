@@ -37,7 +37,7 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
       .single();
 
     if (error) {
-      console.error(`Nothing found for this feedback id. ${error.message}`)
+      console.error(`Nothing found for this feedback id. ${error}`)
       throw error
     };
 
@@ -51,11 +51,9 @@ feedbackController.getFeedbackById = async (req: Request, res: Response, next: N
     const sbError = e as PostgrestError;
     console.log(sbError);
 
-    const code = Number(sbError.code) ?? 500;
-
     const error: ServerError = {
       log: "FeedbackController: Error while getting feedback for this id",
-      status: code,
+      status: 500,
       message: {
         error: `${sbError.message}`
       }
@@ -143,14 +141,7 @@ feedbackController.addFeedback = async (req: Request, res: Response, next: NextF
       const { data: urlData, error: urlError } = await supabase
         .storage
         .from("student_feedback_files")
-        .createSignedUrl(fileNameFull, 60 * 60 * 24 * 365, {
-          transform: {
-            width: 600,
-            height: 600,
-            quality: 70,
-            resize: "contain"
-          }
-        });
+        .createSignedUrl(fileNameFull, 60 * 60 * 24 * 365);
 
       if (urlError) {
         console.error("feedbackController/createSignedUrl/error: ", urlError);
