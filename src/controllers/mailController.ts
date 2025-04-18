@@ -71,13 +71,19 @@ mailController.extractPdf = async (req: Request, res: Response, next: NextFuncti
 
     })
 
+    req.on("error", (error) => {
+      console.error(error.name);
+      console.error(error.message);
+      throw error;
+    })
+
   } catch (e) {
 
     const error: ServerError = {
       log: "Something went wrong while extracting pdf.",
       status: 500,
       message: {
-        error: `Middleware error occurred while extracting pdf. ${e}`
+        error: `Middleware error occurred while extracting pdf. \n ${e}`
       }
     }
 
