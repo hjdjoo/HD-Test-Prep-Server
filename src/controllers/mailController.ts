@@ -49,23 +49,13 @@ mailController.extractPdf = async (req: Request, res: Response, next: NextFuncti
 
       const base64Pdf = pdfBuffer.toString("base64");
 
-      console.log(`fs.existsSync(path.resolve("./", "src", "pdfs")): ${fs.existsSync(path.resolve("./", "src", "pdfs"))}`)
-
-      if (!fs.existsSync(path.resolve("./", "src", "pdfs"))) {
-
-        fs.mkdirSync(path.resolve("./", "src", "pdfs"))
-      }
-
-      // save pdf to disk
-      fs.writeFileSync(path.resolve("./", "src", "pdfs", `session-summary-${id}.pdf`), pdfBuffer);
-
       // temporarily save in mem to send to db
       const clientData = {
         sessionId: id,
         base64Pdf: base64Pdf
       }
 
-      res.locals.clientData = Object.assign({}, res.locals.clientData, clientData)
+      res.locals.clientData = Object.assign({}, res.locals.clientData, clientData);
 
       return next();
 
