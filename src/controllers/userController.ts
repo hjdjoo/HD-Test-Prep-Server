@@ -17,9 +17,10 @@ interface UserController {
 const userController: UserController = {};
 
 
-userController.checkTokens = async (req: Request, _res: Response, next: NextFunction) => {
+userController.checkTokens = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    console.log("checking cookies...");
     // check if there are tokens in cookies. If not, check the body.
     const { cookies } = req;
     // console.log("cookies", cookies);
@@ -28,7 +29,7 @@ userController.checkTokens = async (req: Request, _res: Response, next: NextFunc
       return next();
     }
 
-
+    return res.status(401).json({ error: "No tokens detected." });
   }
   catch (e) {
 
