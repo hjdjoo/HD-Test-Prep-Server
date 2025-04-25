@@ -8,9 +8,9 @@ userRouter.post("/",
   userController.checkTokens,
   userController.getUser,
   userController.initProfile,
-  (_req: Request, _res: Response, next: NextFunction) => {
+  (_req: Request, res: Response, _next: NextFunction) => {
 
-    return next();
+    res.status(200).json({ success: true })
 
   })
 

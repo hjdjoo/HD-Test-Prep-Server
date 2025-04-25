@@ -58,6 +58,11 @@ app.use("/health", (_req: Request, res: Response) => {
   res.status(200).json("ok");
 });
 
+app.post("/auth", (_req, res, _next) => {
+  console.log("reached dummy route");
+  res.status(200).json({ success: true })
+})
+
 app.use("/auth", userRouter);
 app.use("/db", userController.checkTokens, dbRouter);
 app.use("/mail", userController.checkTokens, mailRouter);
