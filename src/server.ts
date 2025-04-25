@@ -19,16 +19,20 @@ process.on('uncaughtException', function (err) {
 
 const corsOptions = {
   origin: process.env.VITE_URL!,
+  credentials: true,
   optionsSuccessStatus: 200,
 }
 
 const PORT = Number(process.env.SERVER_PORT) || 3000;
 
 const app: Application = express();
-
 console.log("entered express server");
 
-app.use(cors(corsOptions))
+app.set("trust proxy", 1);
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(SUPABASE_JWT_SECRET))
@@ -63,7 +67,7 @@ function errorHandler(err: ServerError, _req: Request, res: Response, _next: Nex
 
     const errObj = Object.assign({}, defaultError, err);
 
-    res.status(500).json(errObj.message);
+    res.status(errObj.status).json(errObj.message);
 
   }
 }
