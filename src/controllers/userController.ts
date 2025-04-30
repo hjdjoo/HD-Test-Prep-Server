@@ -25,10 +25,11 @@ userController.checkTokens = async (req: Request, _res: Response, next: NextFunc
     const { cookies } = req;
     // console.log("cookies", cookies);
     if (cookies.accessToken) {
-      console.log("access tokens detected in cookies. Continuing..")
+      console.log("access tokens detected in cookies. Continuing..");
       return next();
+    } else {
+      throw new Error("No access token detected");
     }
-
     // return res.status(401).json({ error: "No access token detected." });
   }
   catch (e) {
