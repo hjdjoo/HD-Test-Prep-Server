@@ -13,31 +13,25 @@ interface Context {
 
 const createSupabase = (context: Context) => {
   // console.log("CreateSupabase/cookies: ", context.req.cookies);
+  const authHeader = context.req.headers['authorization'];
+  const accessToken = authHeader?.split(' ')[1]; // Bearer <token>  
 
-  const { accessToken, refreshToken } = context.req.cookies;
+  if (!accessToken) {
+    console.log("No access token found.");
+  }
 
   const client = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
     auth: {
       autoRefreshToken: true,
       persistSession: true,
     },
+    global: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    }
   });
 
-  // Set the session if the accessToken is found.
-  if (accessToken && refreshToken) {
-    console.log("tokens found, setting supabase server client session");
-    client.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    }).then(res => {
-      const { error } = res;
-      console.error("sessionError: ", error);
-      if (error) {
-        console.error("message: ", error?.message);
-      }
-    });
-
-  }
   return client;
 };
 

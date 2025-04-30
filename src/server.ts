@@ -29,6 +29,11 @@ const PORT = Number(process.env.SERVER_PORT) || 3000;
 const app: Application = express();
 console.log("entered express server");
 
+app.use((req, _res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  return next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now(); // mark request start time
 
@@ -37,15 +42,10 @@ app.use((req, res, next) => {
     console.log(`[${req.method}] ${req.originalUrl} - ${res.statusCode} - ${duration}ms`);
   });
 
-  next();
+  return next();
 });
 
 app.set("trust proxy", 1);
-
-app.use((req, _res, next) => {
-  console.log(`[${req.method}] ${req.url}`);
-  next();
-});
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));

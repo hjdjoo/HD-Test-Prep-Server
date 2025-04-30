@@ -19,18 +19,17 @@ const userController: UserController = {};
 
 userController.checkTokens = async (req: Request, _res: Response, next: NextFunction) => {
   try {
+    console.log("checking tokens...")
+    const authHeader = req.headers['authorization'];
+    const accessToken = authHeader?.split(' ')[1]; // Bearer <token>  
 
-    console.log("checking cookies...");
-    // check if there are tokens in cookies. If not, check the body.
-    const { cookies } = req;
-    // console.log("cookies", cookies);
-    if (cookies.accessToken) {
-      console.log("access tokens detected in cookies. Continuing..");
-      return next();
-    } else {
-      throw new Error("No access token detected");
+    if (!accessToken || !accessToken.length) {
+      console.log("no access token found");
+      throw new Error("No access token found");
     }
-    // return res.status(401).json({ error: "No access token detected." });
+
+    return next();
+
   }
   catch (e) {
 
