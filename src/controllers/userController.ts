@@ -17,7 +17,7 @@ interface UserController {
 const userController: UserController = {};
 
 
-userController.checkTokens = async (req: Request, res: Response, next: NextFunction) => {
+userController.checkTokens = async (req: Request, _res: Response, next: NextFunction) => {
   try {
 
     console.log("checking cookies...");
