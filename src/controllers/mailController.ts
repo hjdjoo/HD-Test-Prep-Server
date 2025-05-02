@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express"
 import * as nodemailer from "nodemailer";
-import * as fs from "fs";
-import path from "path";
 import createSupabase from "@/utils/supabase/server.js";
 import { decode } from "base64-arraybuffer";
 import { ServerError } from "../_types/server-types.js";
