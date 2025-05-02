@@ -175,7 +175,7 @@ mailController.uploadPdf = async (req: Request, res: Response, next: NextFunctio
     console.log("successfully uploaded file to db.");
 
     // clear PDF from memory
-    delete res.locals.clientData.base64Pdf;
+    // delete res.locals.clientData.base64Pdf;
 
     return next();
 
@@ -214,7 +214,9 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
 
     const fileName = `session-summary-${sessionId}.pdf`
 
-    const pathName = path.resolve("./", "src", "pdfs", `session-summary-${sessionId}.pdf`)
+    const { base64Pdf } = clientData;
+
+    const buffer = Buffer.from(base64Pdf, "base64");
 
     const mailOptions = {
       from: "no-reply@hdprep.me",
@@ -225,7 +227,7 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
       attachments: [
         {
           fileName: fileName,
-          path: pathName
+          content: buffer
         }
       ]
     }
@@ -241,11 +243,9 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
         throw new Error(err.message);
       }
 
-      console.log("removing file...");
-      fs.unlinkSync(pathName);
-
     })
 
+    console.log("removing file...");
     res.locals.clientData = {};
 
     return res.status(200).json("Email successfully sent");
