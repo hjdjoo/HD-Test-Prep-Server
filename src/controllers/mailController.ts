@@ -157,7 +157,7 @@ mailController.uploadPdf = async (req: Request, res: Response, next: NextFunctio
 
     const supabase = createSupabase({ req, res })
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .storage
       .from("student_reports")
       .upload(`session_summary_${sessionId}.pdf`,
@@ -172,8 +172,23 @@ mailController.uploadPdf = async (req: Request, res: Response, next: NextFunctio
 
     console.log("successfully uploaded file to db.");
 
+    const filePath = data.path;
+    console.log(filePath);
+
+    const { data: urlData, error: urlError } = await supabase
+      .storage
+      .from("student_reports")
+      .createSignedUrl(filePath, 3600 * 24 * 7);
+
+    if (urlError) {
+      console.error(urlError.cause);
+      console.error(urlError.message);
+      throw new Error(urlError.message);
+    }
+    res.locals.clientData.pdfUrl = urlData.signedUrl;
+
     // clear PDF from memory
-    // delete res.locals.clientData.base64Pdf;
+    delete res.locals.clientData.base64Pdf;
 
     return next();
 
@@ -197,24 +212,22 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
 
   try {
 
-    console.log("in sendEmail middleware");
+    // console.log("in sendEmail middleware");
 
     const clientData = res.locals.clientData;
 
     const { id: sessionId } = req.params;
 
-    console.log("sessionID: ", sessionId)
+    // console.log("sessionID: ", sessionId)
 
     const { studentName, studentEmail, tutorEmail }: { studentName: string, studentEmail: string, tutorEmail: string } = clientData;
 
-    console.log("mailController.ts/clientData: ")
-    console.log(studentName, studentEmail, tutorEmail);
+    // console.log("mailController.ts/clientData: ")
+    // console.log(studentName, studentEmail, tutorEmail);
 
     const fileName = `session-summary-${sessionId}.pdf`
 
-    const { base64Pdf } = clientData;
-
-    const buffer = Buffer.from(base64Pdf, "base64");
+    const pdfUrl: string = clientData.pdfUrl;
 
     const mailOptions = {
       from: "no-reply@hdprep.me",
@@ -225,7 +238,8 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
       attachments: [
         {
           fileName: fileName,
-          content: buffer
+          href: pdfUrl,
+          contentType: "application/pdf"
         }
       ]
     }
