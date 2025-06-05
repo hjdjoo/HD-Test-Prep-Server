@@ -20,4 +20,4 @@ RUN npm install --omit=dev
 
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["node", "dist/server.js"]

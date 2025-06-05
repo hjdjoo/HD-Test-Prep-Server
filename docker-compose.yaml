@@ -6,7 +6,6 @@ services:
     container_name: hd-prep-server-prod
     ports:
       - "3000:3000"
-    command: [ "node", "dist/server.js" ]
     init: true
     stop_signal: SIGTERM
     stop_grace_period: 30s
