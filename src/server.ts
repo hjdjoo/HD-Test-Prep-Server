@@ -1,6 +1,7 @@
 import "dotenv/config"
 import express, { Application, NextFunction, Request, Response } from "express";
-import cors from "cors";
+import cors, { type CorsOptions } from "cors";
+// import CustomOrigin
 import cookieParser from "cookie-parser"
 
 import userRouter from "./routes/user.js";
@@ -17,8 +18,16 @@ process.on('uncaughtException', function (err) {
   console.log(err);
 });
 
-const corsOptions = {
-  origin: process.env.VITE_URL!,
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://hdprep.me",
+]
+
+const corsOptions: CorsOptions = {
+  origin: (origin: string | undefined) => {
+    if (!origin || !allowedOrigins.includes(origin)) return false;
+    return true;
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,
   optionsSuccessStatus: 200,
