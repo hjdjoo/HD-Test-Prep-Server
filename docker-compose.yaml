@@ -28,11 +28,7 @@ services:
       - certs:/etc/letsencrypt
       - certbot_conf:/var/lib/letsencrypt
     entrypoint: >
-      sh -c "certbot certonly --non-interactive --agree-tos
-        --standalone -m joo.darryl@gmail.com
-        -d api.hdprep.me
-        --keep-until-expiring &&
-        crond -f"
+      sh -c "certbot certonly --non-interactive --agree-tos --standalone -m joo.darryl@gmail.com -d api.hdprep.me --keep-until-expiring && crond -f"
 volumes:
   certs:
   certbot_conf:
