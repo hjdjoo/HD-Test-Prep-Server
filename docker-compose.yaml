@@ -4,8 +4,7 @@ services:
     env_file:
       - .env
     container_name: hd-prep-server-prod
-    ports:
-      - "3000:3000"
+    expose: [ "3000" ]
     init: true
     stop_signal: SIGTERM
     stop_grace_period: 30s
@@ -14,8 +13,28 @@ services:
     build: ./nginx
     ports:
       - "80:80"
-    depends_on:
-      - server
+      - "443:443"
     init: true
     stop_grace_period: 10s
+    depends_on:
+      - server
+    volumes:
+      - certs:/etc/letsencrypt
+      - certbot_conf:/var/lib/letsencrypt
     restart: unless-stopped
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certs:/etc/letsencrypt
+      - certbot_conf:/var/lib/letsencrypt
+    entrypoint: >
+      sh -c "
+        certbot certonly --non-interactive --agree-tos
+        --standalone -m joo.darryl@gmail.com
+        -d api.hdprep.me
+        --keep-until-expiring &&
+        crond -f
+      "
+volumes:
+  certs:
+  certbot_conf:
