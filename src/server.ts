@@ -11,12 +11,22 @@ import userController from "./controllers/userController.js";
 
 import { ServerError } from "./_types/server-types.js";
 
-
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!
 
-process.on('uncaughtException', function (err) {
+process.on("uncaughtException", function (err) {
   console.log(err);
+  gracefulExit("uncaughtException");
 });
+process.on("unhandledRejection", function (err) {
+  console.log(err);
+  gracefulExit("unhandledRejection");
+});
+
+["SIGTERM", "SIGINT"].forEach(signal => {
+  process.on(signal, () => {
+    gracefulExit(signal);
+  })
+})
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -34,6 +44,8 @@ const corsOptions: CorsOptions = {
 }
 
 const PORT = Number(process.env.SERVER_PORT) || 3000;
+let shuttingDown = false;
+const SHUTDOWN_TIMER = 10_000;
 
 const app: Application = express();
 console.log("entered express server");
@@ -98,10 +110,32 @@ function errorHandler(err: ServerError, _req: Request, res: Response, _next: Nex
   }
 }
 
-app.use(errorHandler)
+app.use(errorHandler);
 
-app.listen(PORT, "0.0.0.0", () => {
+
+const server = app.listen(PORT, "0.0.0.0", () => {
 
   console.log(`Server listening on port ${PORT}`);
 
 });
+
+function gracefulExit(signal: string): void {
+  if (shuttingDown) {
+    return;
+  }
+  shuttingDown = true;
+  console.log(`[${signal}] closing HTTP connections...`);
+
+  server.close(async (err?: Error) => {
+    if (err) {
+      console.error("HTTP close error: ", err);
+    }
+    process.exit(err ? 1 : 0);
+  });
+
+  setTimeout(() => {
+    console.error("Forcing Shutdown");
+    process.exit(1);
+  }, SHUTDOWN_TIMER).unref();
+
+}
