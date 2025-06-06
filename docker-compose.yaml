@@ -20,15 +20,18 @@ services:
       - server
     volumes:
       - certs:/etc/letsencrypt
-      - certbot_conf:/var/lib/letsencrypt
+      - webroot:/var/www/certbot
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
   certbot:
     image: certbot/certbot:latest
     volumes:
       - certs:/etc/letsencrypt
-      - certbot_conf:/var/lib/letsencrypt
+      - webroot:/var/www/certbot
     entrypoint: >
-      sh -c "certbot certonly --non-interactive --agree-tos --standalone -m joo.darryl@gmail.com -d api.hdprep.me --keep-until-expiring && crond -f"
+      sh -c "trap exit TERM; while :;
+              do certbot renew --webroot -w /var/www/certbot --quiet;
+              sleep 12h & wait $${!}; done;"
 volumes:
   certs:
-  certbot_conf:
+  webroot:
