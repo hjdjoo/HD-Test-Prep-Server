@@ -34,9 +34,10 @@ const allowedOrigins = [
 ]
 
 const corsOptions: CorsOptions = {
-  origin: (origin: string | undefined) => {
-    if (!origin || !allowedOrigins.includes(origin)) return false;
-    return true;
+  origin: (origin: string | undefined, cb) => {
+    if (!origin) return cb(null, true);
+    if (!allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"))
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,
