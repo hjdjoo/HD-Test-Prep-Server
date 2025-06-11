@@ -31,6 +31,7 @@ process.on("unhandledRejection", function (err) {
 const allowedOrigins = [
   "http://localhost:5173",
   "https://hdprep.me",
+  "https://www.hdprep.me"
 ]
 
 const corsOptions: CorsOptions = {
