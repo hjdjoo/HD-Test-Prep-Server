@@ -2,13 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import createClient from "@/utils/supabase/server.js";
 import createServiceClient from "@/utils/supabase/service.js";
 
-// import HMACSH
-
 import { type User } from "@supabase/supabase-js";
 import { ServerError } from "../_types/server-types.js";
 // import createSupabase from "@/utils/supabase/server";
-
-console.log("entered userController");
 
 interface UserController {
   [middleware: string]: (req: Request, res: Response, next: NextFunction) => void
@@ -17,23 +13,29 @@ interface UserController {
 const userController: UserController = {};
 
 
-userController.checkTokens = async (req: Request, _res: Response, next: NextFunction) => {
+userController.checkTokens = async (req: Request, res: Response, next: NextFunction) => {
+  // console.log("checking tokens")
   try {
 
-    // check if there are tokens in cookies. If not, check the body.
-    const { cookies } = req;
-    // console.log("cookies", cookies);
-    if (cookies.accessToken && cookies.refreshToken) {
-      console.log("tokens detected in cookies. Continuing..")
+
+    const authHeader = req.headers.authorization;
+    console.log(authHeader)
+    console.log(req.cookies)
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      console.log("Auth headers found")
+      const token = authHeader.substring(7);
+
+      res.locals.accessToken = token;
+
       return next();
+    } else {
+      throw Error("No authorization found")
     }
-
-
   }
   catch (e) {
 
     console.error(e);
-
     const error: ServerError = {
       log: "userController: Error while checking tokens",
       status: 401,
@@ -41,9 +43,7 @@ userController.checkTokens = async (req: Request, _res: Response, next: NextFunc
         error: `${e}`
       }
     }
-
     return next(error);
-
   }
 
 }
@@ -60,7 +60,7 @@ userController.getUser = async (req: Request, res: Response, next: NextFunction)
 
     const { data: authData, error: authError } = await supabase
       .auth
-      .getUser();
+      .getUser(res.locals.accessToken);
 
     if (authError) {
       throw new Error(`Couldn't get user from DB. ${authError.message}`)

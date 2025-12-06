@@ -10,7 +10,6 @@ import userController from "./controllers/userController.js";
 
 import { ServerError } from "./_types/server-types.js";
 
-
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET!
 
 process.on('uncaughtException', function (err) {
@@ -20,7 +19,9 @@ process.on('uncaughtException', function (err) {
 const corsOptions = {
   origin: process.env.VITE_URL!,
   optionsSuccessStatus: 200,
+  credentials: true,
 }
+
 
 const PORT = Number(process.env.SERVER_PORT) || 3000;
 
@@ -28,9 +29,20 @@ const app: Application = express();
 
 console.log("entered express server");
 
+app.use((req, _res, next) => {
+  console.log(`${req.method} ${req.path}`, req.headers.origin);
+  next();
+});
+
+app.options("*", (_req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true")
+  next()
+})
+
 app.use(cors(corsOptions))
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser(SUPABASE_JWT_SECRET))
 
 app.use("/health", (_req: Request, res: Response) => {

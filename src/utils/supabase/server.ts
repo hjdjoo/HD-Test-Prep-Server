@@ -14,29 +14,32 @@ interface Context {
 const createSupabase = (context: Context) => {
   // console.log("CreateSupabase/cookies: ", context.req.cookies);
 
-  const { accessToken, refreshToken } = context.req.cookies;
-
   const client = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
     auth: {
       persistSession: true,
     },
   });
 
-  // Set the session if the accessToken is found.
-  if (accessToken && refreshToken) {
-    console.log("tokens found, setting supabase server client session");
+  const { req } = context
+
+  const authHeader = req.headers.authorization
+  const { cookies } = req
+
+  console.log(cookies.refresh_token)
+
+  if (authHeader && authHeader.startsWith("Bearer ") && cookies.refresh_token) {
+
     client.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      access_token: authHeader.replace("Bearer ", ""),
+      refresh_token: cookies.refresh_token
     }).then(res => {
       const { error } = res;
-      console.error("sessionError: ", error);
       if (error) {
-        console.error("message: ", error?.message);
+        console.error("message: ", error.message)
       }
-    });
-
+    })
   }
+
   return client;
 };
 

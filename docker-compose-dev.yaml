@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   server-dev:
     image: darryljoo/hd-prep-server-dev

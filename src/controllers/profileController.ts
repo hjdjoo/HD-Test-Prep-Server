@@ -30,7 +30,7 @@ profileController.getStudents = async (req: Request, res: Response, next: NextFu
       throw new Error(error.message);
     }
 
-    console.log("getStudents/data: ", data);
+    // console.log("getStudents/data: ", data);
 
     const clientData = data.map(row => {
       return camelCase(row) as CamelCasedProperties<typeof row>

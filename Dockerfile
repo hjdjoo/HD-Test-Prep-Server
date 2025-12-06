@@ -2,10 +2,11 @@ FROM node:22.14-bookworm-slim AS builder
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json tsconfig.json ./
+# Copy and install dependencies first
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
 
-RUN npm install
-
+# Copy source files and build
 COPY ./src ./src
 RUN npm run build
 
@@ -13,10 +14,12 @@ FROM node:22.14-bookworm-slim
 
 WORKDIR /usr/src/app
 
+# Copy built files from builder stage
 COPY --from=builder /usr/src/app/dist ./dist
 COPY package.json package-lock.json ./
 
-RUN npm install --omit=dev
+# Install production dependencies only
+RUN npm ci --only=production
 
 EXPOSE 3000
 
