@@ -87,7 +87,7 @@ mailController.getInstructorEmail = async (req: Request, res: Response, next: Ne
     const { userId } = req.query;
     const supabase = createSupabase({ req, res })
 
-    console.log(req.query)
+    // console.log(req.query)
 
     if (!Number(userId)) {
       throw new Error("mailController/getInstructorEmail: Couldn't parse user ID from query.");
@@ -202,12 +202,12 @@ mailController.sendEmail = async (req: Request, res: Response, next: NextFunctio
 
     const { id: sessionId } = req.params;
 
-    console.log("sessionID: ", sessionId)
+    // console.log("sessionID: ", sessionId)
 
     const { studentName, studentEmail, tutorEmail }: { studentName: string, studentEmail: string, tutorEmail: string } = clientData;
 
-    console.log("mailController.ts/clientData: ")
-    console.log(studentName, studentEmail, tutorEmail);
+    // console.log("mailController.ts/clientData: ")
+    // console.log(studentName, studentEmail, tutorEmail);
 
     const fileName = `session-summary-${sessionId}.pdf`
 

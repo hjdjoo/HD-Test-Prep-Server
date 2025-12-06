@@ -221,7 +221,7 @@ profileController.deleteProfile = async (req: Request, res: Response, next: Next
 
     const { id } = req.params;
 
-    console.log(id);
+    // console.log(id);
 
     if (!Number.parseInt(id)) {
       throw new Error("Couldn't parse ID from params");
