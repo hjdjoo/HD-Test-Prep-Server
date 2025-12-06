@@ -19,8 +19,8 @@ userController.checkTokens = async (req: Request, res: Response, next: NextFunct
 
 
     const authHeader = req.headers.authorization;
-    console.log(authHeader)
-    console.log(req.cookies)
+    // console.log(authHeader)
+    // console.log(req.cookies)
 
     if (authHeader && authHeader.startsWith('Bearer ')) {
       console.log("Auth headers found")
