@@ -4,10 +4,11 @@ WORKDIR /usr/src/app
 
 # Copy and install dependencies first
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
+RUN npm install
 
 # Copy source files and build
 COPY ./src ./src
+COPY tsconfig.json ./
 RUN npm run build
 
 FROM node:22.14-bookworm-slim
